@@ -5,6 +5,7 @@ import { getPhotoById } from "../services";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import PhotoDetails from "../components/PhotoDetails";
+import { motion } from "framer-motion";
 
 const Details: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -37,12 +38,19 @@ const Details: React.FC = () => {
     }
   };
 
-  if (loading) return <p className="text-center text-gray-500">Loading...</p>;
+  if (loading)
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1 }}
+      />
+    );
   if (error) return <p className="text-center text-red-500">{error}</p>;
   if (!photo) return <p className="text-center text-red-500">No photo found</p>;
 
   return (
-    <div className="max-w-xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+    <div className="max-w-xl mx-auto p-6">
       <PhotoDetails photo={photo} />
     </div>
   );

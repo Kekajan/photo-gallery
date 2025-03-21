@@ -5,7 +5,8 @@ import { IPhoto } from "../types";
 import { getPhotos } from "../services";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
-
+import { motion } from "framer-motion";
+import Loader from "../components/Loader";
 
 const Home: React.FC = () => {
   const photoData: IPhoto[] = useSelector(
@@ -33,7 +34,7 @@ const Home: React.FC = () => {
     };
 
     fetchPhotos();
-  }, [page, dispatch]); 
+  }, [page, dispatch]);
 
   const handleViewDetails = (id: number) => {
     navigate(`/photo/${id}`);
@@ -43,14 +44,36 @@ const Home: React.FC = () => {
     setPage(page + 1);
   };
 
-  if (loading) return <p className="text-center text-gray-500">Loading...</p>;
+  if (loading)
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+      />
+    );
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-2xl font-bold text-center mb-6">Photo Gallery</h1>
       <ListPhotos photos={photoData} onViewDetails={handleViewDetails} />
-      <button onClick={handleLoad}>{buttonLoading ? "loading.." : "Load More."}</button>
+      {/* <button onClick={handleLoad} className="mt-6">
+        {buttonLoading ? "loading.." : "Load More."}
+      </button> */}
+      {/* <button
+        onClick={handleLoad}
+        className="bg-blue-500 text-white px-4 py-2 mt-6 inline-block rounded hover:bg-blue-600 transition text-left w-fit font-medium"
+      >
+        Load More
+      </button> */}
+      <button
+        onClick={handleLoad}
+        className="bg-blue-500 text-white px-4 py-2 mt-6 inline-flex items-center gap-2 rounded hover:bg-blue-600 transition text-left w-fit font-medium"
+        disabled={buttonLoading}
+      >
+        {buttonLoading ? <Loader /> : "Load More"}
+      </button>
     </div>
   );
 };
