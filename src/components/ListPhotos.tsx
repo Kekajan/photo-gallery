@@ -1,13 +1,13 @@
 import React from "react";
-import Card from "../components/Card";
-import { Photo } from "../types/types";
+import Card from "./Card";
+import { IPhoto } from "../types";
 
-interface ListPhotosProps {
-  photos: Photo[];
+interface PhotoListProps {
+  photos: IPhoto[];
   onViewDetails: (id: number) => void;
 }
 
-const ListPhotos: React.FC<ListPhotosProps> = ({ photos, onViewDetails }) => {
+const PhotoList: React.FC<PhotoListProps> = ({ photos, onViewDetails }) => {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       {photos.map((photo) => (
@@ -17,4 +17,4 @@ const ListPhotos: React.FC<ListPhotosProps> = ({ photos, onViewDetails }) => {
   );
 };
 
-export default ListPhotos;
+export default PhotoList;

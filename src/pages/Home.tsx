@@ -1,34 +1,46 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { Photo } from "../types/types";
 import ListPhotos from "../components/ListPhotos";
+import { IPhoto } from "../types";
+import { getPhotos } from "../services";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../store";
+
 
 const Home: React.FC = () => {
-  const [photos, setPhotos] = useState<Photo[]>([]);
+  const photoData: IPhoto[] = useSelector(
+    (state: RootState) => state.photos.photoData
+  );
+  const [page, setPage] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(true);
+  const [buttonLoading, setButtonLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchPhotos = async () => {
+      setLoading(page == 1);
+      setButtonLoading(page !== 1);
       try {
-        const response = await axios.get<Photo[]>(
-          "https://jsonplaceholder.typicode.com/photos?_limit=20"
-        );
-        setPhotos(response.data);
+        await getPhotos(page, dispatch);
       } catch (err) {
-        setError("Failed to load photos.");
+        setError("Failed to load photos: " + err);
       } finally {
         setLoading(false);
+        setButtonLoading(false);
       }
     };
 
     fetchPhotos();
-  }, []);
+  }, [page, dispatch]); 
 
   const handleViewDetails = (id: number) => {
     navigate(`/photo/${id}`);
+  };
+
+  const handleLoad = () => {
+    setPage(page + 1);
   };
 
   if (loading) return <p className="text-center text-gray-500">Loading...</p>;
@@ -37,7 +49,8 @@ const Home: React.FC = () => {
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-2xl font-bold text-center mb-6">Photo Gallery</h1>
-      <ListPhotos photos={photos} onViewDetails={handleViewDetails} />
+      <ListPhotos photos={photoData} onViewDetails={handleViewDetails} />
+      <button onClick={handleLoad}>{buttonLoading ? "loading.." : "Load More."}</button>
     </div>
   );
 };
