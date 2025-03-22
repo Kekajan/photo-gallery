@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { IPhoto } from "../types";
 import { getPhotoById } from "../services";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import PhotoDetails from "../components/PhotoDetails";
 import { motion } from "framer-motion";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 const Details: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -15,6 +17,7 @@ const Details: React.FC = () => {
   const photoData: IPhoto[] = useSelector(
     (state: RootState) => state.photos.photoData
   );
+  const navigate = useNavigate();
 
   useEffect(() => {
     setLoading(true);
@@ -38,6 +41,10 @@ const Details: React.FC = () => {
     }
   };
 
+  const handleBack = async () => {
+    navigate("/");
+  };
+
   if (loading)
     return (
       <motion.div
@@ -50,8 +57,19 @@ const Details: React.FC = () => {
   if (!photo) return <p className="text-center text-red-500">No photo found</p>;
 
   return (
-    <div className="max-w-xl mx-auto p-6">
-      <PhotoDetails photo={photo} />
+    <div className="relative">
+      <button
+        onClick={handleBack}
+        className="absolute top-16 left-24 bg-blue-500 text-white px-4 py-2 inline-flex items-center gap-2 rounded hover:bg-blue-600 transition font-bold"
+      >
+        <>
+          <FontAwesomeIcon icon={faArrowLeft}  style={{ fontSize: '24px' }}/>
+          Back
+        </>
+      </button>
+      <div className="max-w-xl mx-auto p-6">
+        <PhotoDetails photo={photo} />
+      </div>
     </div>
   );
 };
