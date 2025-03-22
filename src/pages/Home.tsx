@@ -84,7 +84,7 @@ const Home: React.FC = () => {
         className="bg-blue-500 text-white px-4 py-2 mt-6 inline-flex items-center gap-2 rounded hover:bg-blue-600 transition text-left w-fit font-medium"
         disabled={buttonLoading}
       >
-        {buttonLoading ? <Loader /> : "Load More..."}
+        {buttonLoading ? <Loader /> : "Load more..."}
       </button>
     </div>
   );
